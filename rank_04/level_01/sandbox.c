@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 20:14:42 by brfialho          #+#    #+#             */
-/*   Updated: 2026/08/24 21:39:09 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/08/24 21:41:35 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <signal.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 void segfault_function( void )
 {
