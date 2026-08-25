@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 20:14:42 by brfialho          #+#    #+#             */
-/*   Updated: 2026/08/24 21:45:05 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/08/24 21:47:21 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,7 @@ void bad_exit_function( void )
 
 void good_function( void )
 {
-	char	*s = malloc(10);
-
-	int i = -1;
-	while (++i < 9)
-		s[i] = 'b';
-	s[i] = 0;
-	printf("GOOD: %s\n", s);
-	free(s);
+	printf("Good!\n");
 }
 
 int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
