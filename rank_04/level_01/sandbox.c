@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 20:14:42 by brfialho          #+#    #+#             */
-/*   Updated: 2026/08/24 21:41:35 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/08/24 21:45:05 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,18 +64,18 @@ int sandbox(void (*f)(void), unsigned int timeout, bool verbose)
 	waitpid(-1, &exit_code, 0);
 
 	if (!verbose)
-		return (!(exit_code == 0));
+		return (exit_code == 0);
 	if (WIFSIGNALED(exit_code))
 	{
 		(sig = WTERMSIG(exit_code)) == SIGALRM ? printf("Bad function: timed out after %d seconds\n", timeout)
 		: printf("Bad function: %s\n", strsignal(sig));
-		return 1;
+		return 0;
 	}
 	if (exit_code == 0)
 		printf("Nice function!\n");
 	else
 		printf("Bad function: exited with code %d\n", exit_code);
-	return (!(exit_code == 0));
+	return (exit_code == 0);
 }
 
 int main(void)
