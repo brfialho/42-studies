@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 21:49:47 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/01 17:10:18 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/01 17:16:50 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@ int ft_popen(const char *file, char *const argv[], char type)
 	if (pid == 0)
 	{
 		if (dup2(fd[type], type) == -1)
-			return (close(fd[0]), close(fd[1]), -1);
+			exit(1);
 		close(fd[0]);
 		close(fd[1]);
-		if (execvp(file, argv))
-			exit(1);
+		execvp(file, argv);
+		exit(1);
 	}
 	return (close(fd[type]), fd[!type]);
 }
