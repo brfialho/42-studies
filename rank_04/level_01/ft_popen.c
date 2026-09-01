@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 21:49:47 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/01 16:59:49 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/01 17:10:18 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int main()
 		int n;
 		char buffer[100] = {0};
 		int fd = ft_popen("cat", (char * const[]){"cat", "sandbox.c", NULL}, 'r');
-		while (n = (read(fd, buffer, 100)))
+		while ((n = read(fd, buffer, 100)))
 		{
 			write(1, buffer, n);
 			bzero(buffer, 100);
@@ -115,7 +115,7 @@ int main()
 		dup2(fd, 0);
 		close(fd);
 		fd = ft_popen("grep", (char * const[]){"grep", "c", NULL}, 'r');
-		while (n = (read(fd, buffer, 100)))
+		while ((n = read(fd, buffer, 100)))
 		{
 			write(1, buffer, n);
 			bzero(buffer, 100);
