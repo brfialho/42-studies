@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:19:39 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/01 18:20:58 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/01 18:46:43 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,43 +20,38 @@ int    picoshell(char **cmds[])
 {
 	int i;
 	int	pid;
-	// int	fd[(sizeof(cmds)/8) - 1][2];
 	int	fd[2];
 	int	status;
 
 	i = -1;
-	if (pipe(fd))
-		return -1;
-	dup2(fd[0], 0);
-	close(fd[0]);
 	while (cmds[++i])
 	{
-		printf("A\n");
+		if (pipe(fd))
+			return -1;
 		if ((pid = fork()) == -1)
 			return (close(fd[0]), close(fd[1]), -1);
 		if (pid == 0)
 		{
-			printf("B1\n");
-			dup2(fd[1], 1);
-			// printf("B2\n");
+			if (cmds[i + 1])
+				dup2(fd[1], 1);
 			close(fd[1]);
-			// printf("B3\n");
+			close(fd[0]);
 			execvp(cmds[i][0], cmds[i]);
-			// printf("B4\n");
 			exit(1);
 		}
-		printf("B\n");
+		dup2(fd[0], 0);
+		close(fd[0]);
+		close(fd[1]);
 		wait(&status);
-		printf("C\n");
 		if (status)
-			return -1; // fudeu
+			return -1;
 	}
 	return 0;
 }
 
 int main (void)
 {
-	alarm(4);
+	alarm(3);
 	char **cmds[4] = {(char *[]){"ls", NULL},
 					(char *[]){"grep", "c", NULL},
 					(char *[]){"wc", "-l", NULL},

@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 21:49:47 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/01 17:16:50 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/01 18:23:34 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,29 +84,29 @@ int main()
 	// write(file->_fileno, "Olá Mundo\n", 11);
 	// pclose(file);
 
-	{	
-		int n;
-		char buffer[100] = {0};
-		int fd = ft_popen("cat", (char * const[]){"cat", "sandbox.c", NULL}, 'r');
-		while ((n = read(fd, buffer, 100)))
-		{
-			write(1, buffer, n);
-			bzero(buffer, 100);
-		}
-		close(fd);
-	}
+	// {	
+	// 	int n;
+	// 	char buffer[100] = {0};
+	// 	int fd = ft_popen("cat", (char * const[]){"cat", "sandbox.c", NULL}, 'r');
+	// 	while ((n = read(fd, buffer, 100)))
+	// 	{
+	// 		write(1, buffer, n);
+	// 		bzero(buffer, 100);
+	// 	}
+	// 	close(fd);
+	// }
 
-{	int n;
-	char buffer[1000] = {0};
-	int file = ft_popen("bc", (char * const[]){"bc", NULL}, 'w');
-	while ((n = read(0, buffer, 1000)))
-	{
-		if (!strncmp(buffer, "END", 3))
-			break;
-		write(file, buffer, strlen(buffer));
-		bzero(buffer, 1000);
-	}
-	close(file);}
+// {	int n;
+// 	char buffer[1000] = {0};
+// 	int file = ft_popen("bc", (char * const[]){"bc", NULL}, 'w');
+// 	while ((n = read(0, buffer, 1000)))
+// 	{
+// 		if (!strncmp(buffer, "END", 3))
+// 			break;
+// 		write(file, buffer, strlen(buffer));
+// 		bzero(buffer, 1000);
+// 	}
+// 	close(file);}
 
 		{	
 		int n;
