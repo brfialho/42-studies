@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 17:19:39 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/01 18:46:43 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/01 18:54:35 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,16 @@ int main (void)
 					(char *[]){"grep", "c", NULL},
 					(char *[]){"wc", "-l", NULL},
 					NULL};
-	picoshell(cmds);
+	// char **cmds[3] = {(char *[]){"echo", "hello\nworld\neba", NULL},
+	// 				(char *[]){"grep", "z", NULL},
+	// 				NULL};
+	if (picoshell(cmds))
+		printf("FUDEU\n");
 }
+
+// #include <sys/types.h>
+// #include <dirent.h>
+// #include <string.h>
 
 // int count_open_fds() {
 //     DIR *dir = opendir("/proc/self/fd");
