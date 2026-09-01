@@ -6,13 +6,13 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/24 21:49:47 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/01 16:21:36 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/01 16:59:49 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
-
 #include <stdlib.h>
+
 #include <stdio.h>
 #include <string.h>
 
@@ -24,35 +24,22 @@ int ft_popen(const char *file, char *const argv[], char type)
 	int fd[2];
 	int pid;
 
+	type = (type == 'r');
 	if (pipe(fd))
 		return -1;
 	if ((pid = fork()) == -1)
 		return (close(fd[0]), close(fd[1]), -1);
 	if (pid == 0)
 	{
-		if (type == 'r')
-		{
-			close(fd[0]);
-			dup2(fd[1], 1);
-		}
-		else
-		{
-			close(fd[1]);
-			dup2(fd[0], 0);	
-		}
+		if (dup2(fd[type], type) == -1)
+			return (close(fd[0]), close(fd[1]), -1);
+		close(fd[0]);
+		close(fd[1]);
 		if (execvp(file, argv))
-		{
-			close(fd[0]);
-			close(fd[1]);
 			exit(1);
-		}
 	}
-	if (type == 'r')
-		return (close(fd[1]), fd[0]);
-	return (close(fd[0]), fd[1]);
+	return (close(fd[type]), fd[!type]);
 }
-
-char	*get_next_line(int fd);
 
 int main()
 {
@@ -109,16 +96,33 @@ int main()
 		close(fd);
 	}
 
-	int n;
+{	int n;
 	char buffer[1000] = {0};
 	int file = ft_popen("bc", (char * const[]){"bc", NULL}, 'w');
 	while ((n = read(0, buffer, 1000)))
 	{
-		// write(file->_fileno, "Hello World\n", 12);
+		if (!strncmp(buffer, "END", 3))
+			break;
 		write(file, buffer, strlen(buffer));
 		bzero(buffer, 1000);
 	}
-	close(file);
+	close(file);}
+
+		{	
+		int n;
+		char buffer[100] = {0};
+		int fd = ft_popen("ls", (char * const[]){"ls", NULL}, 'r');
+		dup2(fd, 0);
+		close(fd);
+		fd = ft_popen("grep", (char * const[]){"grep", "c", NULL}, 'r');
+		while (n = (read(fd, buffer, 100)))
+		{
+			write(1, buffer, n);
+			bzero(buffer, 100);
+		}
+		close(fd);
+		close(0);
+	}
 
 	// char buffer[100] = {0};
 	// while (read(1, buffer, 100))
