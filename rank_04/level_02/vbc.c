@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 19:07:33 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/03 18:49:50 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/03 19:09:59 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include <unistd.h>
 typedef struct node {
     enum {
         ADD,
@@ -100,24 +101,40 @@ int get_lowest_prec(char *s)
             cl_pl = parenthesis_level;
             currnt_low = i;
         }
-        printf("%s\n c:%c, cl:%d gp:%d pl:%d\n", s, s[i], currnt_low, get_prec(s[i], parenthesis_level), parenthesis_level);
+        // printf("%s\n c:%c, cl:%d gp:%d pl:%d\n", s, s[i], currnt_low, get_prec(s[i], parenthesis_level), parenthesis_level);
     }
-    printf("\n\n");
+    // printf("\n\n");
     if (isdigit(s[currnt_low]))
         return -1;
     return currnt_low;
 }
 
+int get_value(char *s)
+{
+    while (*s && (*s == '(' || *s == ')'))
+        s++;
+    return (*s -'0');
+}
+
+
 node    *parse_expr(char *s)
 {
-    node	*ret;
+    int     low_prec;
 
-    if (*s) 
+    low_prec = get_lowest_prec(s);
+    if (low_prec == -1)
+        return new_node((node){VAL, get_value(s), NULL, NULL});
+    if (s[low_prec] == '+' || s[low_prec] == '*')
     {
-        destroy_tree(ret);
-        return (NULL);
+        s[low_prec] = 0;
+        return new_node((node){((s[low_prec] == '*')), 0, parse_expr(s), parse_expr(s + low_prec + 1)});
     }
-    return (ret);
+    return NULL;
+    // if (*s) 
+    // {
+    //     destroy_tree(ret);
+    //     return (NULL);
+    // }
 }
 
 int eval_tree(node *tree)
@@ -135,18 +152,18 @@ int eval_tree(node *tree)
 
 int main(int argc, char **argv)
 {
-    // if (argc != 2)
-    //     return (1);
-    // node *tree = parse_expr(argv[1]);
-    // if (!tree)
-    //     return (1);
-    // printf("%d\n", eval_tree(tree));
-    // destroy_tree(tree);
+    if (argc != 2)
+        return (1);
+    node *tree = parse_expr(argv[1]);
+    if (!tree)
+        return (1);
+    printf("%d\n", eval_tree(tree));
+    destroy_tree(tree);
     // printf("%d:%c %s\n", get_lowest_prec("1+2"), "1+2"[get_lowest_prec("1+2")], "1+2");
     // printf("%d:%c %s\n", get_lowest_prec("1"), "1"[ get_lowest_prec("1")], "1");
     // printf("%d:%c %s\n", get_lowest_prec("1+2*3"), "1+2*3"[ get_lowest_prec("1+2*3")], "1+2*3");
     // printf("%d:%c %s\n", get_lowest_prec("(1+2)*3"), "(1+2)*3"[get_lowest_prec("(1+2)*3")], "(1+2)*3");
     // printf("%d:%c %s\n", get_lowest_prec("1*3"), "1*3"[ get_lowest_prec("1*3")], "1*3");
     // printf("%d:%c %s\n", get_lowest_prec("(1*2)+3"), "(1*2)+3"[get_lowest_prec("(1*2)+3")], "(1*2)+3");
-    printf("%d:%c %s\n", get_lowest_prec("((1+2)*3*4+5+(6))"), "((1+2)*3*4+5+(6))"[get_lowest_prec("((1+2)*3*4+5+(6))")], "((1+2)*3*4+5+(6))");
+    // printf("%d:%c %s\n", get_lowest_prec("((1+2)*3*4+5+(6))"), "((1+2)*3*4+5+(6))"[get_lowest_prec("((1+2)*3*4+5+(6))")], "((1+2)*3*4+5+(6))");
 }
