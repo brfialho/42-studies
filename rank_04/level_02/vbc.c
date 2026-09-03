@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 19:07:33 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/03 19:29:50 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/03 19:31:33 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,9 +144,9 @@ int eval_tree(node *tree)
     switch (tree->type)
     {
         case ADD:
-            return (write (1, "+\n", 2), eval_tree(tree->l) + eval_tree(tree->r));
+            return (eval_tree(tree->l) + eval_tree(tree->r));
         case MULTI:
-            return (write (1, "*\n", 2), eval_tree(tree->l) * eval_tree(tree->r));
+            return (eval_tree(tree->l) * eval_tree(tree->r));
         case VAL:
             return (tree->val);
     }
