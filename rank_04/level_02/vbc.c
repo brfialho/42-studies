@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 19:07:33 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/04 15:49:07 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/04 15:54:00 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,19 @@ int expect(char **s, char c)
     return (0);
 }
 
+int eval_tree(node *tree)
+{
+    switch (tree->type)
+    {
+        case ADD:
+            return (eval_tree(tree->l) + eval_tree(tree->r));
+        case MULTI:
+            return (eval_tree(tree->l) * eval_tree(tree->r));
+        case VAL:
+            return (tree->val);
+    }
+}
+
 int get_prec(char c, int p_level)
 {
     if (isdigit(c))
@@ -114,17 +127,6 @@ int get_value(char *s)
     while (*s && (*s == '(' || *s == ')'))
         s++;
     return (*s -'0');
-}
-
-
-
-int validate_three(node *root)
-{
-    if (root == NULL)
-        return (0);
-    if (root->type != VAL && (!root->l || !root->r))
-        return (root->type + 3); // since ADD is zero
-    return (0);
 }
 
 node *build_three(char *s)
@@ -181,6 +183,15 @@ int validate_chars(char *s)
     return 0;
 }
 
+int validate_three(node *root)
+{
+    if (root == NULL)
+        return (0);
+    if (root->type != VAL && (!root->l || !root->r))
+        return (root->type + 3); // since ADD is zero
+    return (0);
+}
+
 void    destroy_bad_three(node *n)
 {
     if (!n)
@@ -210,18 +221,7 @@ node    *parse_expr(char *s)
     return (ret);
 }
 
-int eval_tree(node *tree)
-{
-    switch (tree->type)
-    {
-        case ADD:
-            return (eval_tree(tree->l) + eval_tree(tree->r));
-        case MULTI:
-            return (eval_tree(tree->l) * eval_tree(tree->r));
-        case VAL:
-            return (tree->val);
-    }
-}
+// double digit/end of string
 
 int main(int argc, char **argv)
 {
