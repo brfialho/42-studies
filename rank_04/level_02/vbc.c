@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 19:07:33 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/04 18:00:33 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/04 18:30:04 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,16 +129,37 @@ int get_value(char *s)
     return (*s -'0');
 }
 
+int double_digit(char *s)
+{
+    int i = -1;
+    int found = 0;
+    int value = 0;
+
+    while (s[++i])
+        if (isdigit(s[i]))
+        {
+            if (found == 1)
+                value = s[i] - '0';
+            found++;
+        }
+    return (value);
+}
+
 node *build_three(char *s)
 {
     int     low_prec;
+    int     dd_err;
 
     // printf("%d:%c %s\n", get_lowest_prec(s), s[get_lowest_prec(s)], s);
     if (!*s)
         return(NULL);
     low_prec = get_lowest_prec(s);
     if (low_prec == -1)
+    {
+        if ((dd_err = double_digit(s)))
+            return new_node((node){VAL, dd_err + 10, NULL, NULL});;
         return new_node((node){VAL, get_value(s), NULL, NULL});
+    }
     if (s[low_prec] == '+' || s[low_prec] == '*')
     {
         int signal = (s[low_prec] == '*');
@@ -188,13 +209,32 @@ int validate_chars(char *s)
 int validate_three(node *root)
 {
     if (root == NULL)
-        return (0);
+        return (0); 
+    if (root->val >= 10)
+        return (root->val);
     if (root->type != VAL && (!root->l || !root->r))
         return (root->type + 3); // since ADD is zero
 
     int l_err = validate_three(root->l);
     int r_err = validate_three(root->r);
     return (l_err * (l_err != 0) + r_err * (r_err && !l_err));
+}
+
+int validate_end_token(char *s)
+{
+    int found;
+    int i;
+
+    i = -1;
+    while(s[++i]);
+
+    found = 0;
+    while (i-- > 0)
+        if (isdigit(s[i]))
+            found++;
+        else if (!found && (s[i] == '+' || s[i] == '-'))
+            return 1;
+    return 0;
 }
 
 void    destroy_bad_three(node *n)
@@ -213,11 +253,17 @@ node    *parse_expr(char *s)
     node    *ret;
     int     err;
 
+    if (!s || !*s || (err = validate_end_token(s)))
+        return (printf("Unexpected end of input\n"), NULL);
+
     if ((err = validate_parenthesis(s)) || (err = validate_chars(s)))
         return (printf("Unexpected token '%c'\n", s[err]), NULL);
 
     ret = build_three(s);
-    if ((err = validate_three(ret)))
+    err = validate_three(ret);
+    if (err >= 10)
+        return (printf("Unexpected token '%d'\n", err - 10), NULL);
+    if (err)
     {
         printf("Unexpected token '%c'\n", (int)(err - 3) ? '*' : '+');
         destroy_bad_three(ret);
