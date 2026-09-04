@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 19:07:33 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/03 19:31:33 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/04 15:49:07 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,17 @@ int get_value(char *s)
 }
 
 
-node    *parse_expr(char *s)
+
+int validate_three(node *root)
+{
+    if (root == NULL)
+        return (0);
+    if (root->type != VAL && (!root->l || !root->r))
+        return (root->type + 3); // since ADD is zero
+    return (0);
+}
+
+node *build_three(char *s)
 {
     int     low_prec;
 
@@ -129,14 +139,75 @@ node    *parse_expr(char *s)
     {
         int signal = (s[low_prec] == '*');
         s[low_prec] = 0;
-        return new_node((node){signal, 0, parse_expr(s), parse_expr(s + low_prec + 1)});
+        return new_node((node){signal, 0, build_three(s), build_three(s + low_prec + 1)});
     }
     return NULL;
-    // if (*s) 
-    // {
-    //     destroy_tree(ret);
-    //     return (NULL);
-    // }
+}
+
+int validate_parenthesis(char *s)
+{
+    int p_level = 0;
+    int i = -1;;
+    int last_open = 0;
+
+    while (s[++i])
+    {
+        if (s[i] == '(')
+        {
+            last_open = i;
+            p_level++;
+        }
+        if (s[i] == ')')
+            p_level--;
+        if (p_level < 0)
+            return (i);
+    }
+    if (p_level > 0)
+        return (last_open);
+    return (0);
+}
+
+int validate_chars(char *s)
+{
+    int i = -1;
+
+    while (s[++i])
+        if (!(s[i] == '+'
+        || s[i] == '*'
+        || s[i] == '('
+        || s[i] == ')'
+        || isdigit(s[i])))
+        return i;
+    return 0;
+}
+
+void    destroy_bad_three(node *n)
+{
+    if (!n)
+        return ;
+    if (n->l)
+        destroy_bad_three(n->l);
+    if (n->r)
+        destroy_bad_three(n->r);
+    free(n);
+}
+
+node    *parse_expr(char *s)
+{
+    node    *ret;
+    int     err;
+
+    if ((err = validate_parenthesis(s)) || (err = validate_chars(s)))
+        return (printf("Unexpected token '%c'\n", s[err]), NULL);
+
+    ret = build_three(s);
+    if ((err = validate_three(ret)))
+    {
+        printf("Unexpected token '%c'\n", (int)(err - 3) ? '*' : '+');
+        destroy_bad_three(ret);
+        return (NULL);
+    }
+    return (ret);
 }
 
 int eval_tree(node *tree)
