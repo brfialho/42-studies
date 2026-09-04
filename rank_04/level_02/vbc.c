@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 19:07:33 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/04 18:30:04 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/04 18:32:45 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,10 +262,10 @@ node    *parse_expr(char *s)
     ret = build_three(s);
     err = validate_three(ret);
     if (err >= 10)
-        return (printf("Unexpected token '%d'\n", err - 10), NULL);
+        return (printf("Unexpected token '%d'\n", err - 10), NULL); // -10 internal code for int error
     if (err)
     {
-        printf("Unexpected token '%c'\n", (int)(err - 3) ? '*' : '+');
+        printf("Unexpected token '%c'\n", (int)(err - 3) ? '*' : '+'); // -3 for internal code for operator error since add is zero
         destroy_bad_three(ret);
         return (NULL);
     }
