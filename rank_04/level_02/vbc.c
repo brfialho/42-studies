@@ -6,7 +6,7 @@
 /*   By: brfialho <brfialho@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/01 19:07:33 by brfialho          #+#    #+#             */
-/*   Updated: 2026/09/04 15:54:00 by brfialho         ###   ########.fr       */
+/*   Updated: 2026/09/04 18:00:33 by brfialho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,8 @@ node *build_three(char *s)
     int     low_prec;
 
     // printf("%d:%c %s\n", get_lowest_prec(s), s[get_lowest_prec(s)], s);
+    if (!*s)
+        return(NULL);
     low_prec = get_lowest_prec(s);
     if (low_prec == -1)
         return new_node((node){VAL, get_value(s), NULL, NULL});
@@ -189,7 +191,10 @@ int validate_three(node *root)
         return (0);
     if (root->type != VAL && (!root->l || !root->r))
         return (root->type + 3); // since ADD is zero
-    return (0);
+
+    int l_err = validate_three(root->l);
+    int r_err = validate_three(root->r);
+    return (l_err * (l_err != 0) + r_err * (r_err && !l_err));
 }
 
 void    destroy_bad_three(node *n)
